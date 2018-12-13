@@ -16,7 +16,9 @@ class Committer(object):
 	def commit(self, iteration):
 		os.system('git add .')
 		os.system("git commit -m 'Commit corresponding to iteration %s'" % str(iteration))
-		if iteration % 50000 == 0 and iteration != 0:
+		if iteration % 25 == 0 and iteration != 0:
+			os.system('git prune')
+			os.system('rm .git/gc.log')
 			self.push()
 
 	def push(self):

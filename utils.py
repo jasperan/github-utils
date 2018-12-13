@@ -40,7 +40,7 @@ class Committer(object):
 		self.push_upstream(iteration)
 
 	def tag(self, iteration):
-		os.system("git tag -a 1.0.%s -m 'Release of version 1.0.%s' % (iteration, iteration)")
+		os.system("git tag -a 1.0.%s -m 'Release of version 1.0.%s" % (iteration, iteration))
 		os.system('git push --tags')
 
 def branch(i):
@@ -88,10 +88,10 @@ def tag(number):
 		i = i + 1
 
 def release(number):
+	pass
 
 def main():
-	lock = threading.Lock()
-	script, action, goal, timedelay = sys.argv
+	script, action, goal = sys.argv
 	if goal == 'inf':
 		goal = 10000000
 	if action == 'branch':

@@ -92,6 +92,8 @@ def release(number):
 def main():
 	lock = threading.Lock()
 	script, action, goal, timedelay = sys.argv
+	if goal == 'inf':
+		goal = 10000000
 	if action == 'branch':
 		branch(int(goal))
 	elif action == 'commit':

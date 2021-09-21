@@ -9,7 +9,7 @@ class Committer(object):
 		pass
 
 	def modifyFile(self, iteration):
-		fd = open('a.txt', 'r+b')
+		fd = open('a.txt', 'r+')
 		fd.write(str(iteration))
 		fd.close()
 
@@ -104,7 +104,7 @@ def main():
 	elif action == 'tag':
 		tag(int(goal))
 	else:
-		print 'Invalid input. Choose between branch and commit, with an iteration number.'
+		print('Invalid input. Choose between branch and commit, with an iteration number.')
 		sys.exit(1)
 
 	"""

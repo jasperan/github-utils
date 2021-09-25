@@ -9,7 +9,7 @@ class Committer(object):
 		pass
 
 	def modifyFile(self, iteration):
-		fd = open('a.txt', 'r+')
+		fd = open('/home/jasper/git/github-utils/a.txt', 'r+')
 		fd.write(str(iteration))
 		fd.close()
 
@@ -20,6 +20,7 @@ class Committer(object):
 		if iteration % 25000 == 0 and iteration != 0:
 			os.system('git prune')
 			self.push()
+		os.system('git push')
 
 	def push(self):
 		os.system('git push')

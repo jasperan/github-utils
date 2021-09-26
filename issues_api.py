@@ -23,7 +23,7 @@ def get_issues(token):
     }
 
     response = requests.get('https://api.github.com/repos/jasperan/github-utils/issues', headers=HEADERS, auth=('jasperan', token))
-    # print(response.status_code, response.json())
+    print(response.status_code)
     assert response.status_code == 200
     print('Obtained {} issues'.format(len(response.json())))
 
@@ -41,7 +41,7 @@ def post_issue(token, iteration):
 
 
     response = requests.post('https://api.github.com/repos/jasperan/github-utils/issues', headers=HEADERS, data=DATA, auth=('jasperan', token))
-    # print(response.status_code, response.json())
+    print(response.status_code)
     assert response.status_code == 201
 
     print('Posted {}'.format(response.json().get('url')))
@@ -57,6 +57,7 @@ def close_issue(token, issue_number):
 
 
     response = requests.patch('https://api.github.com/repos/jasperan/github-utils/issues/{}'.format(issue_number), headers=HEADERS, data=DATA, auth=('jasperan', token))
+    print(response.status_code)
     assert response.status_code == 200
     print('Closed #{}'.format(issue_number))
     return response.status_code

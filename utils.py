@@ -9,7 +9,7 @@ class Committer(object):
 		pass
 
 	def modifyFile(self, iteration):
-		fd = open('/home/jasper/git/github-utils/a.txt', 'r+')
+		fd = open('a.txt', 'r+')
 		fd.write(str(iteration))
 		fd.close()
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "github-utils"
-version = "2.0.0"
+dynamic = ["version"]
 description = "GitHub contribution graph painter, activity simulator, and analytics toolkit"
 requires-python = ">=3.10"
 dependencies = [
@@ -31,6 +31,9 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.dynamic]
+version = {attr = "github_utils.__version__"}
 
 [tool.ruff]
 target-version = "py310"

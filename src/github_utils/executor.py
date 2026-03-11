@@ -103,7 +103,7 @@ def execute_paint_plan(
                     engine.push()
                     pushes += 1
 
-    if push and counter > 0 and counter % push_every != 0:
+    if push and counter > 0 and (push_every <= 0 or counter % push_every != 0):
         engine.push()
         pushes += 1
 

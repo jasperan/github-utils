@@ -46,6 +46,11 @@ class ContributionData:
     @classmethod
     def from_graphql_response(cls, raw: dict) -> ContributionData:
         """Parse a raw GraphQL response into a ContributionData instance."""
+        if "errors" in raw:
+            msgs = "; ".join(e.get("message", str(e)) for e in raw["errors"])
+            raise ValueError(f"GitHub GraphQL error: {msgs}")
+        if raw.get("data") is None:
+            raise ValueError("GitHub GraphQL response missing 'data' field")
         collection = raw["data"]["viewer"]["contributionsCollection"]
         calendar = collection["contributionCalendar"]
         day_counts: Dict[str, int] = {}

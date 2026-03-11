@@ -5,6 +5,7 @@ import typer
 from github_utils import __version__
 from github_utils.commands.paint import paint_command
 from github_utils.commands.simulate import simulate_app
+from github_utils.commands.legacy import legacy_app
 from github_utils.commands.stats import stats_app
 
 app = typer.Typer(
@@ -15,6 +16,7 @@ app = typer.Typer(
 app.command(name="paint")(paint_command)
 app.add_typer(simulate_app, name="simulate")
 app.add_typer(stats_app, name="stats")
+app.add_typer(legacy_app, name="legacy")
 
 
 def _version_callback(value: bool):

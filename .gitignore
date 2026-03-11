@@ -1,2 +1,20 @@
 # Ignore config file
 config.yaml
+
+# Design/plan documents
+docs/plans/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+
+# Runtime
+*.pid
+thread*.txt
+
+# IDE
+.vscode/
+.idea/

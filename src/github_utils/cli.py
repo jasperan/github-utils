@@ -3,11 +3,14 @@ from typing import Optional
 import typer
 
 from github_utils import __version__
+from github_utils.commands.paint import paint_command
 
 app = typer.Typer(
     name="github-utils",
     help="GitHub contribution graph painter, activity simulator, and analytics toolkit.",
 )
+
+app.command(name="paint")(paint_command)
 
 
 def _version_callback(value: bool):

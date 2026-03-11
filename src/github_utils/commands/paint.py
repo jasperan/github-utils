@@ -8,17 +8,13 @@ from typing import Optional
 import typer
 from rich.console import Console
 from rich.table import Table
-from rich.text import Text
 
 from github_utils.painter.font import render_text
 from github_utils.painter.grid import ContributionGrid
 from github_utils.painter.patterns import list_builtin_patterns, load_pattern
+from github_utils.painter.preview import render_grid_preview
 
 console = Console()
-
-# Block characters mapping intensity 0-4 to visual weight.
-_BLOCKS = [" ", "\u2591", "\u2592", "\u2593", "\u2588"]  # " ", "░", "▒", "▓", "█"
-_COLORS = ["dim", "green", "bright_green", "bold green", "bold bright_green"]
 
 
 def _resolve_grid(
@@ -40,18 +36,7 @@ def _resolve_grid(
 
 def _render_preview(grid: ContributionGrid) -> None:
     """Render a terminal grid preview using block characters and Rich colors."""
-    console.print()
-    console.print("[bold]Grid Preview[/bold]")
-    console.print()
-    for row in range(grid.rows):
-        line = Text()
-        for col in range(grid.cols):
-            val = grid.get(row, col)
-            block = _BLOCKS[val]
-            color = _COLORS[val]
-            line.append(block, style=color)
-        console.print(line)
-    console.print()
+    render_grid_preview(grid, console=console)
 
 
 def _render_commit_plan(grid: ContributionGrid) -> None:

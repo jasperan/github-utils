@@ -192,12 +192,8 @@ class ProfileEngine:
         plans: List[DayPlan] = []
         current = start_date
         while current <= end_date:
-            # --- state transitions ---
-            if remaining_in_mode > 0:
-                remaining_in_mode -= 1
-                if remaining_in_mode == 0:
-                    mode = _Mode.NORMAL
-            else:
+            # --- state transitions (enter new mode when idle) ---
+            if remaining_in_mode == 0 and mode == _Mode.NORMAL:
                 roll = self._rng.random()
                 if roll < cfg.burst_probability:
                     mode = _Mode.BURST
@@ -209,7 +205,6 @@ class ProfileEngine:
                     remaining_in_mode = self._rng.randint(
                         *cfg.quiet_duration_days,
                     )
-                # else stays NORMAL for this day, will re-roll tomorrow
 
             # --- compute commit count for the day ---
             if mode == _Mode.QUIET:
@@ -224,6 +219,13 @@ class ProfileEngine:
                 count = max(0, round(base * multiplier))
 
             plans.append(DayPlan(date=current, commit_count=count))
+
+            # --- tick down mode duration AFTER computing today ---
+            if remaining_in_mode > 0:
+                remaining_in_mode -= 1
+                if remaining_in_mode == 0 and mode != _Mode.NORMAL:
+                    mode = _Mode.NORMAL
+
             current += timedelta(days=1)
 
         return plans

@@ -11,6 +11,11 @@ class ContributionGrid:
     COLS = 52
 
     def __init__(self, data: List[List[int]], anchor_date: date | None = None):
+        if len(data) != self.ROWS:
+            raise ValueError(f"Grid must have {self.ROWS} rows, got {len(data)}")
+        for i, row in enumerate(data):
+            if len(row) != self.COLS:
+                raise ValueError(f"Row {i} must have {self.COLS} columns, got {len(row)}")
         self._data = data
         self._anchor = anchor_date or date.today()
 
@@ -33,11 +38,16 @@ class ContributionGrid:
 
     @classmethod
     def from_list(cls, data: List[List[int]], anchor_date: date | None = None) -> ContributionGrid:
-        clamped = [
-            [max(0, min(4, v)) for v in row[:cls.COLS]]
-            for row in data[:cls.ROWS]
-        ]
-        return cls(clamped, anchor_date)
+        normalized = []
+        for row in data[:cls.ROWS]:
+            clamped = [max(0, min(4, v)) for v in row[:cls.COLS]]
+            # Pad short rows
+            clamped.extend([0] * (cls.COLS - len(clamped)))
+            normalized.append(clamped)
+        # Pad missing rows
+        while len(normalized) < cls.ROWS:
+            normalized.append([0] * cls.COLS)
+        return cls(normalized, anchor_date)
 
     def get(self, row: int, col: int) -> int:
         return self._data[row][col]

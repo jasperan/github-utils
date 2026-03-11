@@ -88,9 +88,10 @@ def execute_paint_plan(
                     pushes += 1
         else:
             for i in range(count):
+                extra_min, sec = divmod(i, 60)
                 ts = datetime(
                     day_date.year, day_date.month, day_date.day,
-                    12, 0, i % 60, tzinfo=timezone.utc,
+                    12, extra_min % 60, sec, tzinfo=timezone.utc,
                 )
                 engine.create_backdated_commit(
                     date=ts,
@@ -102,7 +103,7 @@ def execute_paint_plan(
                     engine.push()
                     pushes += 1
 
-    if push and counter > 0:
+    if push and counter > 0 and counter % push_every != 0:
         engine.push()
         pushes += 1
 

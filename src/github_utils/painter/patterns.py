@@ -7,7 +7,7 @@ import yaml
 
 from github_utils.painter.grid import ContributionGrid
 
-_BUILTIN_DIR = Path(__file__).resolve().parent.parent.parent.parent / "patterns"
+_BUILTIN_DIR = Path(__file__).resolve().parent.parent / "patterns_data"
 
 
 def list_builtin_patterns() -> List[str]:

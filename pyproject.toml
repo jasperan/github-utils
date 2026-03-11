@@ -29,6 +29,9 @@ github-utils = "github_utils.cli:app"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+github_utils = ["patterns_data/*.yaml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
-from git import Repo, Actor
+from git import Repo
 
 
 class GitEngine:

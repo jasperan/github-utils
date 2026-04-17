@@ -8,7 +8,7 @@ objects (from the profile engine) and creates backdated commits via
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
@@ -69,6 +69,12 @@ def execute_paint_plan(
     counter = 0
     pushes = 0
 
+    def maybe_push() -> None:
+        nonlocal pushes
+        if push and push_every > 0 and counter % push_every == 0:
+            engine.push()
+            pushes += 1
+
     for day_date, count in plan.day_commits:
         if use_realism and temporal is not None and content is not None:
             timestamps = temporal.generate_timestamps(day_date, count)
@@ -83,9 +89,7 @@ def execute_paint_plan(
                     date=ts, message=msg, file_changes=changes,
                 )
                 counter += 1
-                if push and push_every > 0 and counter % push_every == 0:
-                    engine.push()
-                    pushes += 1
+                maybe_push()
         else:
             for i in range(count):
                 extra_min, sec = divmod(i, 60)
@@ -99,9 +103,7 @@ def execute_paint_plan(
                     file_changes={"a.txt": str(counter)},
                 )
                 counter += 1
-                if push and push_every > 0 and counter % push_every == 0:
-                    engine.push()
-                    pushes += 1
+                maybe_push()
 
     if push and counter > 0 and (push_every <= 0 or counter % push_every != 0):
         engine.push()

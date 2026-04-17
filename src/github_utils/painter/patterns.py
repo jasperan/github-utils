@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import yaml
 
@@ -17,7 +18,9 @@ def list_builtin_patterns() -> List[str]:
     return sorted(p.stem for p in _BUILTIN_DIR.glob("*.yaml"))
 
 
-def load_pattern(name_or_path: str, anchor_date=None) -> ContributionGrid:
+def load_pattern(
+    name_or_path: str, anchor_date: Optional[date] = None
+) -> ContributionGrid:
     """Load a pattern by builtin name or file path.
 
     Parameters
@@ -50,7 +53,9 @@ def load_pattern(name_or_path: str, anchor_date=None) -> ContributionGrid:
     )
 
 
-def _load_from_file(path: Path, anchor_date=None) -> ContributionGrid:
+def _load_from_file(
+    path: Path, anchor_date: Optional[date] = None
+) -> ContributionGrid:
     """Parse a YAML pattern file and return a ContributionGrid."""
     with open(path) as f:
         data = yaml.safe_load(f)

@@ -1,19 +1,19 @@
 from __future__ import annotations
-import os
+
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
+
 from git import Repo
+from git.exc import GitCommandError
 
 
 class GitEngine:
-    def __init__(self, repo: Repo):
+    """Thin wrapper around GitPython that creates backdated commits."""
+
+    def __init__(self, repo: Repo) -> None:
         self.repo = repo
         self._commit_count = 0
-
-    @classmethod
-    def from_path(cls, path: str | Path) -> GitEngine:
-        return cls(Repo(path))
 
     def create_backdated_commit(
         self,
@@ -38,9 +38,11 @@ class GitEngine:
 
     def setup_orphan_branch(self, branch_name: str) -> None:
         self.repo.git.checkout("--orphan", branch_name)
+        # An orphan branch over an empty worktree has nothing to remove; swallow
+        # that specific failure and propagate any other git error.
         try:
             self.repo.git.rm("-rf", ".")
-        except Exception:
+        except GitCommandError:
             pass
 
     def push(

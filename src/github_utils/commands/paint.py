@@ -23,15 +23,17 @@ def _resolve_grid(
     file: Optional[Path],
     intensity: int,
 ) -> ContributionGrid:
-    """Resolve the grid from the given input source."""
+    """Resolve the grid from the given input source.
+
+    Callers must guarantee exactly one of ``text``, ``pattern``, or ``file``
+    is provided -- ``paint_command`` performs that validation upstream.
+    """
     if file is not None:
         return load_pattern(str(file))
     if pattern is not None:
         return load_pattern(pattern)
-    if text is not None:
-        return render_text(text, intensity=intensity)
-    # Fallback: empty grid (shouldn't reach here due to validation)
-    return ContributionGrid.empty()
+    assert text is not None
+    return render_text(text, intensity=intensity)
 
 
 def _render_preview(grid: ContributionGrid) -> None:

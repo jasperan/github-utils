@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from github_utils.painter.grid import ContributionGrid
 

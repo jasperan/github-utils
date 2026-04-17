@@ -1,13 +1,11 @@
-"""Legacy bridge -- backward compatibility with the original utils.py CLI."""
+"""Legacy bridge -- backward compatibility stubs for the pre-2.0 CLI."""
 
 from __future__ import annotations
-
-from typing import Optional
 
 import typer
 from rich.console import Console
 
-legacy_app = typer.Typer(help="Legacy mode: backward-compatible interface for old utils.py commands.")
+legacy_app = typer.Typer(help="Legacy mode: backward-compatible stubs for the pre-2.0 commit/branch commands.")
 
 console = Console()
 
@@ -24,7 +22,7 @@ def commit(
     if dry_run:
         console.print(f"[bold]Legacy mode (dry-run):[/bold] Would create {count} commits.")
         console.print()
-        console.print("[dim]This is the legacy bridge for backward compatibility with utils.py.[/dim]")
+        console.print("[dim]This is the legacy bridge for pre-2.0 backward compatibility.[/dim]")
         console.print("[dim]Consider using 'github-utils paint' or 'github-utils simulate' instead.[/dim]")
     else:
         console.print(f"[bold]Legacy mode:[/bold] Would create {count} commits.")
@@ -47,7 +45,7 @@ def branch(
     if dry_run:
         console.print(f"[bold]Legacy mode (dry-run):[/bold] Branch operation mode='{mode}'.")
         console.print()
-        console.print("[dim]This is the legacy bridge for backward compatibility with utils.py.[/dim]")
+        console.print("[dim]This is the legacy bridge for pre-2.0 backward compatibility.[/dim]")
     else:
         console.print(f"[bold]Legacy mode:[/bold] Branch operation mode='{mode}'.")
         console.print("[yellow]Execution not yet implemented.[/yellow]")

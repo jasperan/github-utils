@@ -8,7 +8,7 @@ lighter during early morning and late night.
 from __future__ import annotations
 
 import random
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from typing import List, Optional
 
 # Default hour weights (index = hour 0..23).

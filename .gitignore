@@ -19,3 +19,19 @@ thread*.txt
 .vscode/
 .idea/
 .coverage
+CLAUDE.md
+
+# Agent/skill directories
+.agents/
+.claude/
+.crush/
+.openhands/
+.serena/
+
+# Generated planning/session outputs
+dogfood-output/
+task_plan.md
+findings.md
+progress.md
+.playwright-mcp/
+content/

@@ -5,7 +5,7 @@ A toolkit for painting text and patterns on your GitHub contribution graph, simu
 ## Installation
 
 <!-- one-command-install -->
-> **One-command install** — clone, configure, and run in a single step:
+> **One-command install**: clone, configure, and run in a single step:
 >
 > ```bash
 > curl -fsSL https://raw.githubusercontent.com/jasperan/github-utils/master/install.sh | bash

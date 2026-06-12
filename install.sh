@@ -87,13 +87,7 @@ install_deps() {
 
     info "Installing dependencies..."
     pip install --upgrade pip -q
-    pip install -e ".[dev]" -q 2>/dev/null || pip install -e . -q || {
-        if [ -f requirements.txt ]; then
-            pip install -r requirements.txt -q
-        else
-            fail "Could not install dependencies"
-        fi
-    }
+    pip install -e ".[dev]" -q 2>/dev/null || pip install -e . -q || fail "Could not install dependencies"
     success "Dependencies installed"
 }
 

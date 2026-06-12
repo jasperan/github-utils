@@ -36,11 +36,6 @@ def _resolve_grid(
     return render_text(text, intensity=intensity)
 
 
-def _render_preview(grid: ContributionGrid) -> None:
-    """Render a terminal grid preview using block characters and Rich colors."""
-    render_grid_preview(grid, console=console)
-
-
 def _render_commit_plan(grid: ContributionGrid) -> None:
     """Show the commit plan as a Rich table."""
     cells = grid.nonzero_cells()
@@ -91,12 +86,10 @@ def paint_command(
         console.print(f"[red]Error:[/red] {exc}")
         raise typer.Exit(code=1)
 
-    if preview:
-        _render_preview(grid)
+    if preview or (not dry_run):
+        render_grid_preview(grid, console=console)
 
     if dry_run:
         _render_commit_plan(grid)
-
-    if not preview and not dry_run:
-        _render_preview(grid)
+    elif not preview:
         console.print("[yellow]Execution not yet implemented.[/yellow] Use --dry-run to see the commit plan.")

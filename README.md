@@ -31,13 +31,14 @@ A toolkit for painting text and patterns on your GitHub contribution graph, simu
 # From source (development)
 git clone https://github.com/jasperan/github-utils.git
 cd github-utils
-pip install -e ".[dev]"
+uv sync --extra dev
 
 # From PyPI
 pip install github-utils
 ```
 
-Requires Python 3.10+.
+Requires Python 3.10+. Development uses [uv](https://docs.astral.sh/uv/) for dependency
+management; prefix commands with `uv run` (e.g. `uv run github-utils --help`).
 
 ## Quick Start
 
@@ -228,22 +229,20 @@ gh auth login
 ### Setup
 
 ```bash
-conda create -n github-utils python=3.12
-conda activate github-utils
-pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
 ### Running tests
 
 ```bash
 # Full suite with coverage
-pytest --cov=github_utils -v
+uv run --extra dev pytest --cov=github_utils -v
 
 # Single test file
-pytest tests/test_integration.py -v
+uv run --extra dev pytest tests/test_integration.py -v
 
 # Only unit tests (fast)
-pytest tests/ -v --ignore=tests/test_integration.py
+uv run --extra dev pytest tests/ -v --ignore=tests/test_integration.py
 ```
 
 ### Project structure

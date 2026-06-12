@@ -8,9 +8,9 @@ objects (from the profile engine) and creates backdated commits via
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import List, Optional
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 from git import Repo
 
@@ -64,10 +64,16 @@ def execute_paint_plan(
     """
     repo = Repo(repo_path)
     engine = GitEngine(repo)
-    temporal = TemporalEngine(seed=seed) if use_realism else None
-    content = ContentEngine(seed=seed) if use_realism else None
     counter = 0
     pushes = 0
+
+    # Choose a per-commit builder once, up front.  Both strategies yield
+    # ``(timestamp, message, file_changes)`` for each commit of a given day;
+    # ``counter`` is the running commit index (used by the fixed-noon path).
+    if use_realism:
+        build_day = _realism_day_builder(seed)
+    else:
+        build_day = _fixed_noon_day_builder
 
     def maybe_push() -> None:
         nonlocal pushes
@@ -76,40 +82,49 @@ def execute_paint_plan(
             pushes += 1
 
     for day_date, count in plan.day_commits:
-        if use_realism and temporal is not None and content is not None:
-            timestamps = temporal.generate_timestamps(day_date, count)
-            for ts in timestamps:
-                # Temporal engine returns naive datetimes; attach UTC
-                # so GitPython's parse_date accepts them.
-                if ts.tzinfo is None:
-                    ts = ts.replace(tzinfo=timezone.utc)
-                msg = content.generate_message()
-                changes = content.generate_file_changes()
-                engine.create_backdated_commit(
-                    date=ts, message=msg, file_changes=changes,
-                )
-                counter += 1
-                maybe_push()
-        else:
-            for i in range(count):
-                extra_min, sec = divmod(i, 60)
-                ts = datetime(
-                    day_date.year, day_date.month, day_date.day,
-                    12, extra_min % 60, sec, tzinfo=timezone.utc,
-                )
-                engine.create_backdated_commit(
-                    date=ts,
-                    message=f"update {counter}",
-                    file_changes={"a.txt": str(counter)},
-                )
-                counter += 1
-                maybe_push()
+        for ts, msg, changes in build_day(day_date, count, counter):
+            engine.create_backdated_commit(date=ts, message=msg, file_changes=changes)
+            counter += 1
+            maybe_push()
 
     if push and counter > 0 and (push_every <= 0 or counter % push_every != 0):
         engine.push()
         pushes += 1
 
     return ExecutionResult(total_commits=counter, total_pushes=pushes)
+
+
+_DayBuilder = Callable[[date, int, int], Iterator[Tuple[datetime, str, Dict[str, str]]]]
+
+
+def _realism_day_builder(seed: Optional[int]) -> _DayBuilder:
+    """Return a day builder that uses temporal and content realism engines."""
+    temporal = TemporalEngine(seed=seed)
+    content = ContentEngine(seed=seed)
+
+    def build(day_date: date, count: int, _counter: int) -> Iterator[Tuple[datetime, str, Dict[str, str]]]:
+        for ts in temporal.generate_timestamps(day_date, count):
+            # Temporal engine returns naive datetimes; attach UTC so
+            # GitPython's parse_date accepts them.
+            if ts.tzinfo is None:
+                ts = ts.replace(tzinfo=timezone.utc)
+            yield ts, content.generate_message(), content.generate_file_changes()
+
+    return build
+
+
+def _fixed_noon_day_builder(
+    day_date: date, count: int, counter: int
+) -> Iterator[Tuple[datetime, str, Dict[str, str]]]:
+    """Yield fixed-noon commits with minimal placeholder content."""
+    for i in range(count):
+        extra_min, sec = divmod(i, 60)
+        ts = datetime(
+            day_date.year, day_date.month, day_date.day,
+            12, extra_min % 60, sec, tzinfo=timezone.utc,
+        )
+        idx = counter + i
+        yield ts, f"update {idx}", {"a.txt": str(idx)}
 
 
 def execute_simulation(

@@ -9,13 +9,11 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from github_utils.realism.profile import ProfileEngine
+from github_utils.realism.profile import ProfileEngine, available_profiles
 
 simulate_app = typer.Typer(help="Simulate realistic GitHub activity patterns.")
 
 console = Console()
-
-_PROFILE_CHOICES = ["default", "night-owl", "weekend-warrior", "9-to-5", "open-source-maintainer"]
 
 
 def _commit_color(count: int) -> str:
@@ -35,17 +33,11 @@ def _commit_color(count: int) -> str:
 def simulate(
     ctx: typer.Context,
     days: int = typer.Option(90, "--days", "-d", min=1, help="Number of days to simulate."),
-    profile: str = typer.Option("default", "--profile", "-p", help=f"Activity profile ({', '.join(_PROFILE_CHOICES)})."),
+    profile: str = typer.Option("default", "--profile", "-p", help=f"Activity profile ({', '.join(available_profiles())})."),
     seed: Optional[int] = typer.Option(None, "--seed", "-s", help="Random seed for reproducibility."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Show plan without executing."),
 ) -> None:
     """Simulate realistic GitHub activity patterns."""
-    # Validate profile name
-    if profile not in _PROFILE_CHOICES:
-        console.print(f"[red]Error:[/red] Unknown profile '{profile}'.")
-        console.print(f"Available profiles: {', '.join(_PROFILE_CHOICES)}")
-        raise typer.Exit(code=1)
-
     try:
         engine = ProfileEngine.from_name(profile, seed=seed)
     except ValueError as exc:
@@ -56,10 +48,8 @@ def simulate(
     start_date = end_date - timedelta(days=days - 1)
     plan = engine.generate_plan(start_date, end_date)
 
-    if dry_run:
-        _show_plan(plan, profile)
-    else:
-        _show_plan(plan, profile)
+    _show_plan(plan, profile)
+    if not dry_run:
         console.print()
         console.print("[yellow]Execution not yet implemented.[/yellow] Use --dry-run to see the plan.")
 

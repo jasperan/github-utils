@@ -119,6 +119,11 @@ _NAMED_PROFILES: Dict[str, ProfileConfig] = {
 }
 
 
+def available_profiles() -> List[str]:
+    """Return the names of all built-in profile presets."""
+    return list(_NAMED_PROFILES)
+
+
 # ---------------------------------------------------------------------------
 # Engine
 # ---------------------------------------------------------------------------

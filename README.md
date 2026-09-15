@@ -224,6 +224,40 @@ gh auth login
 # github-utils will use `gh auth token` automatically
 ```
 
+## Go TUI (Bubble Tea)
+
+`gotui/` is an **additional** way to run the same toolkit: a terminal UI built on
+[charm.land/bubbletea/v2](https://github.com/charmbracelet/bubbletea) with `huh/v2`
+forms, rendered with the project's `docs/tui-design-tokens.md` palette.
+
+It computes nothing itself. Every glyph, pattern, activity profile and commit
+estimate comes from running this repository's own CLI, so a Go user and a Python
+user get identical results.
+
+```bash
+cd gotui
+go build ./cmd/github-utils-tui
+
+./github-utils-tui                                  # full-screen: menu, forms, results
+./github-utils-tui --paint "HELLO" --intensity 4     # jump straight to a paint
+./github-utils-tui --pattern wave
+./github-utils-tui --simulate --days 90 --profile night-owl --seed 7
+./github-utils-tui --before a.json --after b.json   # compare two snapshots
+./github-utils-tui --list                           # patterns, profiles, CLI version
+```
+
+The TUI shows the parsed grid as a coloured calendar above the CLI's own plan
+table, with the exact commands it ran printed underneath. Run it on a terminal for
+the interactive UI; with no terminal on stdin (a pipe, a script, `--plain`, or
+`ACCESSIBLE=1`) it never prompts and instead asks for the action on the command
+line.
+
+`--bin` / `GITHUB_UTILS_BIN` point at a specific CLI. It also resolves the
+checkout's `.venv/bin/github-utils`, falling back to `uv run github-utils`.
+
+Everything it runs is read-only: `paint` and `simulate` are driven with `--preview`
+and `--dry-run`, never their (currently unimplemented) execute branches.
+
 ## Development
 
 ### Setup
